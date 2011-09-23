@@ -32,6 +32,7 @@
 	// ****************************************************************************** \\
  	//   * Created by: Ryoku Weil [w45p].						  \\
   	//   * Visit http://www.ryoku-weil.biz to contact w45p.				  \\
+  	//   * Visit https://github.com/w45p/ for this and other Repos.			  \\
   	//   * This notice MUST stay intact for legal use.				  \\
   	//   * Requires:						  		  \\
  	//	   + MySQL								  \\
@@ -50,64 +51,64 @@
 	// ****************************************************************************** \\	
 	
 
-	    					----METHODS of CLASS DBconnect----
--------------------------------------------------------------------------------------------------------------------------------------------
-|       Name        | 		   Action                 |   	         Required Variables 	    |	           Extra Info              |
--------------------------------------------------------------------------------------------------------------------------------------------
-|     setinfo();    | Sets Information for DB connection. | $dbhost $dbuser $dbpswd $dbname $master | -$master is the master password that |
-|                   |                                     |                                         |   will be used to encrypt();         |    
--------------------------------------------------------------------------------------------------------------------------------------------
-|    checkready();  | Checks if setinfo() has been        |                                         | -Called only by dbconnectme();       |
-|                   |  determined.                        |       XxXxXxXxXxXxXxXxXxXxXxXxXxX       | -Prints error and kills code         |
-|                   |                                     |                                         |  execution if setinfo has not been   |
-|                   |                                     |                                         |  been called or if any of setinfo()  |
-|                   |                                     |                                         |  variables is set to NULL.           |
--------------------------------------------------------------------------------------------------------------------------------------------
-|   dbconnectme();  | Connects to database.               |       XxXxXxXxXxXxXxXxXxXxXxXxXxX       | -Called by all other methods.        |
--------------------------------------------------------------------------------------------------------------------------------------------
-| insertdatabase(); | Inserts data to DB.                 | $fields[] $data[] $table                | -Returns 1 upon success;             |
-|                   |                                     |                                         |  0 upon failure.                     |    
--------------------------------------------------------------------------------------------------------------------------------------------
-|   checkexist();   | Checks if data exists in DB.        | $field $data $table                     | -Returns 0 if no user was found.     | 
--------------------------------------------------------------------------------------------------------------------------------------------
-|  readdatabase();  | Reads database fields.              | $select,$fields[],$data[],$table,       | -Supports ORDER BY, GROUP BY, LIMIT  |
-|                   |                                     | $orderby,$groupby,$limit                |   set =0; for null.                  |  
-|                   |                                     |                                         | -Returns mysql_query array or        |
-|                   |                                     |                                         |  0 if invalid.                       |    
--------------------------------------------------------------------------------------------------------------------------------------------
-| updatedatabase(); | Updates database.                   | $fields[],$data[],$table,$where         | -Returns 1 upon success;             |
-|                   |                                     |                                         |  0 upon failure.                     |    
--------------------------------------------------------------------------------------------------------------------------------------------
-|   deleteentry();  | Deletes specific entry.             | $field,$data,$table                     | -Returns 1 upon success;             |
-|                   |                                     |                                         |  0 upon failure.                     |    
-|                   |                                     |                                         | -You should use a unique field.      |    
--------------------------------------------------------------------------------------------------------------------------------------------
-|    usercheck();   | Allows/Denies Users.                | $table $user $password                  | - Table must include:                | 
-|                   |                                     |                                         |   id(INT), user(TEXT), codex(TEXT).  |    
-|                   |                                     |                                         | - Returns "6r4n73d" when true        |    
-|                   |                                     |                                         |   or "0" when false.                 |    
--------------------------------------------------------------------------------------------------------------------------------------------
-|   encodepass();   | Encrypts password.                  | $password                               | - Returns encrypted string,          |
-|                   |                                     |                                         |   ready for saving to database.      |    
--------------------------------------------------------------------------------------------------------------------------------------------
+	    			        ----METHODS of CLASS DBconnect----
+----------------------------------------------------------------------------------------------------------------------
+|       Name        |          Action             |    Required Variables     |	             Extra Info              |
+----------------------------------------------------------------------------------------------------------------------
+|     setinfo();    | Sets Information for DB     | $dbhost $dbuser $dbpswd   | -$master is the master password that |
+|                   | connection.                 | $dbname $master           |   will be used to encrypt();         |    
+----------------------------------------------------------------------------------------------------------------------
+|    checkready();  | Checks if setinfo() has     |                           | -Called only by dbconnectme();       |
+|                   |  been determined.           | XxXxXxXxXxXxXxXxXxXxXxXxX | -Prints error and kills code         |
+|                   |                             |                           |  execution if setinfo has not been   |
+|                   |                             |                           |  been called or if any of setinfo()  |
+|                   |                             |                           |  variables is set to NULL.           |
+----------------------------------------------------------------------------------------------------------------------
+|   dbconnectme();  | Connects to database.       | XxXxXxXxXxXxXxXxXxXxXxXxX | -Called by all other methods.        |
+----------------------------------------------------------------------------------------------------------------------
+| insertdatabase(); | Inserts data to DB.         | $fields[] $data[] $table  | -Returns 1 upon success;             |
+|                   |                             |                           |  0 upon failure.                     |    
+----------------------------------------------------------------------------------------------------------------------
+|   checkexist();   | Checks if data exists in DB.| $field $data $table       | -Returns 0 if no user was found.     | 
+----------------------------------------------------------------------------------------------------------------------
+|  readdatabase();  | Reads database fields.      | $select,$fields[],$data[],| -Supports ORDER BY, GROUP BY, LIMIT  |
+|                   |                             | $table,$orderby,$groupby, |   set =0; for null.                  |  
+|                   |                             | $limit                    | -Returns mysql_query array or        |
+|                   |                             |                           |  0 if invalid.                       |    
+----------------------------------------------------------------------------------------------------------------------
+| updatedatabase(); | Updates database.           | $fields[],$data[],$table, | -Returns 1 upon success;             |
+|                   |                             | $where                    |  0 upon failure.                     |    
+----------------------------------------------------------------------------------------------------------------------
+|   deleteentry();  | Deletes specific entry.     | $field,$data,$table       | -Returns 1 upon success;             |
+|                   |                             |                           |  0 upon failure.                     |    
+|                   |                             |                           | -You should use a unique field.      |    
+----------------------------------------------------------------------------------------------------------------------
+|    usercheck();   | Allows/Denies Users.        | $table $user $password    | - Table must include:                | 
+|                   |                             |                           |   id(INT), user(TEXT), codex(TEXT).  |    
+|                   |                             |                           | - Returns "6r4n73d" when true        |    
+|                   |                             |                           |   or "0" when false.                 |    
+----------------------------------------------------------------------------------------------------------------------
+|   encodepass();   | Encrypts password.          | $password                 | - Returns encrypted string,          |
+|                   |                             |                           |   ready for saving to database.      |    
+----------------------------------------------------------------------------------------------------------------------
    Cheatnotes: 
-		$dbhost    ->   Your DB's host address.
-		$dbuser    ->   Your DB's username.
-		$dbpswd    ->   Your DB's username's password.
-		$dbname    ->   Your DB's name.
-		$master    ->   Master password that will be used for encryption/decryption. 
-		$field     ->   The name of the field you are pointing to in the DB.
-		$fields[]  ->   Must be an Array; The name of the fields you are pointing to in the DB.
-		$data      ->   The string of information for/of the designated field.
-		$data[]    ->   Must be an Array; The strings of information for/of the designated fields.
-		$table     ->   The name of the table you want to work with.
-		$select    ->   A string of data that fits the SELECT method on mysql Ex.- *
-		$where     ->   A string of data that fits the WHERE method on mysql Ex.- field='data' AND field2='data2'
-		$orderby   ->   A string of data that fits the ORDERBY method on mysql Ex.- field ASC
-		$groupby   ->   A string of data that fits the GROUPBY method on mysql Ex.- field
-		$limit     ->   A string of data that fits the LIMIT method on mysql Ex.- 1,30
-		$user      ->   Username.
-		$password  ->   Unencrypted password.
+		$dbhost   -> Your DB's host address.
+		$dbuser   -> Your DB's username.
+		$dbpswd   -> Your DB's username's password.
+		$dbname   -> Your DB's name.
+		$master   -> Master password that will be used for encryption/decryption. 
+		$field    -> The name of the field you are pointing to in the DB.
+		$fields[] -> Must be an Array; The name of the fields you are pointing to in the DB.
+		$data     -> The string of information for/of the designated field.
+		$data[]   -> Must be an Array; The strings of information for/of the designated fields.
+		$table    -> The name of the table you want to work with.
+		$select   -> A string of data that fits the SELECT method on mysql Ex.- *
+		$where    -> A string of data that fits the WHERE method on mysql Ex.- field='data' AND field2='data2'
+		$orderby  -> A string of data that fits the ORDERBY method on mysql Ex.- field ASC
+		$groupby  -> A string of data that fits the GROUPBY method on mysql Ex.- field
+		$limit    -> A string of data that fits the LIMIT method on mysql Ex.- 1,30
+		$user     -> Username.
+		$password -> Unencrypted password.
 	
 	
     ****************************************************************************************************
