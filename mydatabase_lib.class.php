@@ -1,6 +1,7 @@
 <?
 class DBconnect {
 	
+	//***** Declare Class Variables *****// 
    var $dbhost;  
    var $dbuser;  
    var $dbpswd;  
@@ -8,95 +9,98 @@ class DBconnect {
    var $master;  
    var $ready;  
    
+   
+    //***** __CONSTRUCT(); *****// 
    function __construct() {
-		  $this->ready="0";
-		//  echo "DBconnect.class initialized... <br>";
+	   $this->ready="0";
    }
    
+   
+    //***** SETINFO(); *****//
    function setinfo($dbhost,$dbuser,$dbpswd,$dbname,$master) {
-     $this->dbhost = $dbhost;
-     $this->dbuser = $dbuser;
-     $this->dbpswd = $dbpswd;
-     $this->dbname = $dbname;
-     $this->master = $master;
-     $this->ready = "1";
-	// echo "Información establecida...<br>";
+       $this->dbhost = $dbhost;
+       $this->dbuser = $dbuser;
+       $this->dbpswd = $dbpswd;
+       $this->dbname = $dbname;
+       $this->master = $master;
+       $this->ready = "1";
    }
    
+   
+    //***** CHECKREADY(); *****// 
    function checkready(){
 	   if($this->ready!="1"){
 		echo "<h3>Error, Database info has not been provided for excecute of class DBconnect.</h3>
-	   		 Please use function Setinfo(\$dbhost,\$dbuser,\$dbpswd,\$dbname,\$master); before calling any other function.";
+	   		  Please use function Setinfo(\$dbhost,\$dbuser,\$dbpswd,\$dbname,\$master); before calling any other function.";
 	  	die("<strong><br><br>-Unable to continue-<br><br></strong>");
 	   } else if($this->dbhost==''||$this->dbuser==''||$this->dbpswd==''||$this->dbname==''||$this->master==''||!$this->dbhost||!$this->dbuser||!$this->dbpswd||!$this->dbname||!$this->master){
 		echo "<h3>Error, Database info for excecute of class DBconnect must have a value.</h3>
-	   		 Please use function Setinfo(\$dbhost,\$dbuser,\$dbpswd,\$dbname,\$master); with valid content before calling any other function.";
+	   		  Please use function Setinfo(\$dbhost,\$dbuser,\$dbpswd,\$dbname,\$master); with valid content before calling any other function.";
 	  	die("<strong><br><br>-Unable to continue-<br><br></strong>");		
-		
-	   }
-   } //end function
+		}
+   }
 
 
 
     //***** DBCONNECTME(); *****// 
-function dbconnectme() {
-	$this->checkready();
-	$this->con = mysql_connect($this->dbhost,$this->dbuser,$this->dbpswd);
-	if (!$this->con)
-	  {
-	  	die('Could not connect: ' . mysql_error());
-	  }
-	if(!mysql_select_db($this->dbname, $this->con)){
-	  die('Could not set DB: ' . mysql_error());
-	}
-
-}   
+   function dbconnectme() {
+	   $this->checkready();
+	   $this->con = mysql_connect($this->dbhost,$this->dbuser,$this->dbpswd);
+	   
+	   if (!$this->con)
+	     {
+	     	die('Could not connect: ' . mysql_error());
+	     }
+	   if(!mysql_select_db($this->dbname, $this->con)){
+	        die('Could not set DB: ' . mysql_error());
+	     }
+   }   
       
 	  
 	  
 	  
     //***** INSERTDATABASE(); *****// 
-function insertdatabase($fields,$data,$table)
-{
-$this->dbconnectme();
+   function insertdatabase($fields,$data,$table){
+      $this->dbconnectme();
 
-$this->query="INSERT INTO ".$table;
+      $this->query="INSERT INTO ".$table;
 
-$this->firstfield=1;
-$this->firstdata=1;
+      $this->firstfield=1;
+      $this->firstdata=1;
 
-foreach($fields as $fields) 
-	{
-		if($this->firstfield==1){
-			$this->query=$this->query." (".$fields;
-			$this->firstfield=2;
-		} else {
-		$this->query=$this->query.", ".$fields;
-		}	
-	}
+      foreach($fields as $fields) 
+	      {
+	      	if($this->firstfield==1){
+	      		$this->query=$this->query." (".$fields;
+	      		$this->firstfield=2;
+	      	} else {
+	      	$this->query=$this->query.", ".$fields;
+	      	}	
+          }
 
-$this->query=$this->query.") VALUES ";
+      $this->query=$this->query.") VALUES ";
 
-foreach($data as $data) 
-	{
-		if($this->firstdata==1){
-			$this->query=$this->query." ('".$data;
-			$this->firstdata =2;
-		} else {
-		$this->query=$this->query."', '".$data;
-		}	
-	}
+      foreach($data as $data) 
+	      {
+		      if($this->firstdata==1){
+			      $this->query=$this->query." ('".$data;
+			      $this->firstdata =2;
+		      } else {
+		      $this->query=$this->query."', '".$data;
+		      }	
+	      }
 
-$this->query=$this->query."')";
-// We insert new field...
-if(mysql_query($this->query)){
-	$this->final=1;
-} else {
-	$this->final=0;
-}
-// mysql_close($con);
-return $this->final;
-} // End function
+      $this->query=$this->query."')";
+
+      if(mysql_query($this->query)){
+	      $this->final=1;
+      } else {
+	      $this->final=0;
+      }
+
+      return $this->final;
+   }
+
 	  
 	  
 	  
@@ -116,11 +120,9 @@ while($this->row = mysql_fetch_array($this->result))
 	  $this->final=$this->final+1;
   }
   
-// mysql_close($con);
 return $this->final;
 
-} // End function
-
+} 
 
 
 
@@ -168,22 +170,20 @@ if($limit=="0"||$limit==""){
 } else {
 	$this->query=$this->query." LIMIT ".$limit; 
 }
-// We ask the db...
 
 $this->newarray=mysql_query($this->query);
 if(!$this->newarray){
 	$this->newarray=0;
 }
-// mysql_close($con);
 return $this->newarray;
 
-} // End function
+} 
 
 
 
 
 
-    //***** UPDATEDATABASE(); *****// READY
+    //***** UPDATEDATABASE(); *****// 
 function updatedatabase($fields,$data,$table,$where)
 {
 	 $this->dbconnectme();
@@ -206,7 +206,6 @@ $this->query=$this->query." ".$this->info." WHERE ".$where;
 
 
 
-// We update  field...
 if(mysql_query($this->query)){
 	$this->final=1;
 
@@ -214,37 +213,34 @@ if(mysql_query($this->query)){
 
 	$this->final=0;
 }
-// mysql_close($con);
 return $this->final;
 
-} // End function
+} 
 
 
 
 
-    //***** DELETEENTRY(); *****// READY
+    //***** DELETEENTRY(); *****// 
 function deleteentry($field,$data,$table)
 {
 	 $this->dbconnectme();
 
 $this->query="DELETE FROM ".$table." WHERE ".$field."='".$data."'";;
 
-// We delete field...
 if(mysql_query($this->query)){
 	$this->final=1;
 
 } else {
 	$this->final=0;
 }
-// mysql_close($con);
 return $this->final;
-} // End function
+} 
 
 
 
 
 
-    //***** USERCHECK(); *****// READY
+    //***** USERCHECK(); *****// 
 function usercheck($table,$user,$codex)
 {
 
@@ -259,8 +255,6 @@ while($this->row = mysql_fetch_array($this->result))
 	  $this->realcodex=$this->row['codex'];
 	  $this->id=$this->row['id'];
   }
-
-	// We check codex against realcodex
 	
 	$this->usercodexcheck=sha1($codex);
 	
@@ -278,13 +272,13 @@ while($this->row = mysql_fetch_array($this->result))
 	return $this->access;
 	
 	
-} // End function
+} 
 
 
 
 
 
-    //***** ENCODEPASS(); *****// READY
+    //***** ENCODEPASS(); *****// 
 function encodepass($codex)
 {
 	$this->hiddencodex=sha1($codex);
@@ -294,7 +288,7 @@ function encodepass($codex)
 	$this->ready1=base64_encode($this->almost_done);
 		
 	return $this->ready1;
-} // End function
+} 
 
 
 
@@ -313,12 +307,11 @@ while($this->row = mysql_fetch_array($this->result))
 	  $this->final=$this->final+1;
   }
   
-// mysql_close($con);
 return $this->final;
 
-} // End function
+} 
 
-} //class
+} // End of class
 
 
 
