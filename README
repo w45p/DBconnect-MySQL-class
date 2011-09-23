@@ -5,7 +5,8 @@
 	///	Description:								    ///
 	///	  A class with database goodies for easy interaction with the DB,           ///
 	///	    easy login/user check and password encryption.			    ///
-	///	  Being a class, it supports using more than one database in a single file. ///
+	///	  This was first a collection of functions, and was eventually grown into   ///
+	///	    a class. So it supports using more than one database in a single file.  ///
 	///										    ///
 	///	Revisions:								    ///
 	///      _______________________________________________________________________    ///
@@ -14,9 +15,7 @@
 	///	|     |	          | - Added READ_ME                                     ||  ///
 	///	|     |	          | - Fixed bug with readdatabase(); when strings where ||  ///
 	///     |     |           |    not passed. - Fixed variable issues with usage   ||  ///
-	///     |     |           |    of common names for vars. *Make sure your vars   ||  ///
-	///     |     |           |    are different than the set _GLOBALS.             ||  ///
-	///     |     |           |    ((DEPRECATED in v3))                             ||  ///
+	///     |     |           |    of common names for vars.                        ||  ///
 	///	|_____|___________|____________________________________________________ ||  ///
 	///	|v1.3 | (15/9/11) | - Function library converted into a class to simply ||  ///
 	///	|     |	          |    use and allow connecting to more than one        ||  ///
@@ -112,7 +111,7 @@
 	
 	
     ****************************************************************************************************
-    *			----- \    /     /\      |\    /|  -----|  |       -----		       *
+    *			----- \   /      /\      |\    /|  -----|  |       -----		       *
     *   		|      \ /      /  \     | \  / |  |	|  |       |		               *
     *			|----   X      /____\    |  \/  |  |____|  |       |____		       *
     *			|      / \    /      \   |      |  |       |       |		               *
