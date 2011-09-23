@@ -1,0 +1,174 @@
+	///*********************************************************************************///
+	///*********************************************************************************///
+	///	DATABASE GOODIES V1.3 							    ///
+	///	CLASS NAME: DBconnect							    ///
+	///	Description:								    ///
+	///	  A class with database goodies for easy interaction with the DB,           ///
+	///	    easy login/user check and password encryption.			    ///
+	///	  Being a class, it supports using more than one database in a single file. ///
+	///										    ///
+	///	Revisions:								    ///
+	///      _______________________________________________________________________    ///
+	///	|v1.2 | (1/9/11)  | - Improved the password encryption feature through  ||  ///
+	///     |     |           |    the encryption_class by by A J Marston.          ||  ///
+	///	|     |	          | - Added READ_ME                                     ||  ///
+	///	|     |	          | - Fixed bug with readdatabase(); when strings where ||  ///
+	///     |     |           |    not passed. - Fixed variable issues with usage   ||  ///
+	///     |     |           |    of common names for vars. *Make sure your vars   ||  ///
+	///     |     |           |    are different than the set _GLOBALS.             ||  ///
+	///     |     |           |    ((DEPRECATED in v3))                             ||  ///
+	///	|_____|___________|____________________________________________________ ||  ///
+	///	|v1.3 | (15/9/11) | - Function library converted into a class to simply ||  ///
+	///	|     |	          |    use and allow connecting to more than one        ||  ///
+	///	|     |	          |    database in a single file.                       ||  ///
+	///	|______________________________________________________________________ ||  ///
+	///	|______________________________________________________________________ ||  ///
+	///										    ///
+	///										    ///
+	///*********************************************************************************///
+	///*********************************************************************************///
+
+    				      ***-=w45p (0D35=-***
+	// ****************************************************************************** \\
+ 	//   * Created by: Ryoku Weil [w45p].						  \\
+  	//   * Visit http://www.ryoku-weil.biz to contact w45p.				  \\
+  	//   * This notice MUST stay intact for legal use.				  \\
+  	//   * Requires:						  		  \\
+ 	//	   + MySQL								  \\
+ 	//	   + PHP 5+								  \\
+ 	//   * Password encryption uses a mix of:					  \\
+ 	// 	  - Master password (AJM's encryption_class).				  \\
+ 	//	  - sha1();								  \\
+ 	//	  - base64_encode/decode();					  	  \\
+ 	//   = "code" is defined as every PHP, JS and HTML file involved in this release: \\
+ 	//   * You are free to use this code for any purpose.				  \\
+ 	//   * You are fee to change this code to suit your needs, WITHOUT removal or 	  \\
+ 	//      edition of this notice.							  \\
+ 	//   * You are free to share this code and the changes you make to it.		  \\
+ 	//   * Ryoku Weil [w45p] takes no responsibility for the use of this code.	  \\
+ 	//   * May this code be as useful for you as it was for me.			  \\
+	// ****************************************************************************** \\	
+	
+
+	    					----METHODS of CLASS DBconnect----
+-------------------------------------------------------------------------------------------------------------------------------------------
+|       Name        | 		   Action                 |   	         Required Variables 	    |	           Extra Info              |
+-------------------------------------------------------------------------------------------------------------------------------------------
+|     setinfo();    | Sets Information for DB connection. | $dbhost $dbuser $dbpswd $dbname $master | -$master is the master password that |
+|                   |                                     |                                         |   will be used to encrypt();         |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+|    checkready();  | Checks if setinfo() has been        |                                         | -Called only by dbconnectme();       |
+|                   |  determined.                        |       XxXxXxXxXxXxXxXxXxXxXxXxXxX       | -Prints error and kills code         |
+|                   |                                     |                                         |  execution if setinfo has not been   |
+|                   |                                     |                                         |  been called or if any of setinfo()  |
+|                   |                                     |                                         |  variables is set to NULL.           |
+-------------------------------------------------------------------------------------------------------------------------------------------
+|   dbconnectme();  | Connects to database.               |       XxXxXxXxXxXxXxXxXxXxXxXxXxX       | -Called by all other methods.        |
+-------------------------------------------------------------------------------------------------------------------------------------------
+| insertdatabase(); | Inserts data to DB.                 | $fields[] $data[] $table                | -Returns 1 upon success;             |
+|                   |                                     |                                         |  0 upon failure.                     |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+|   checkexist();   | Checks if data exists in DB.        | $field $data $table                     | -Returns 0 if no user was found.     | 
+-------------------------------------------------------------------------------------------------------------------------------------------
+|  readdatabase();  | Reads database fields.              | $select,$fields[],$data[],$table,       | -Supports ORDER BY, GROUP BY, LIMIT  |
+|                   |                                     | $orderby,$groupby,$limit                |   set =0; for null.                  |  
+|                   |                                     |                                         | -Returns mysql_query array or        |
+|                   |                                     |                                         |  0 if invalid.                       |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+| updatedatabase(); | Updates database.                   | $fields[],$data[],$table,$where         | -Returns 1 upon success;             |
+|                   |                                     |                                         |  0 upon failure.                     |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+|   deleteentry();  | Deletes specific entry.             | $field,$data,$table                     | -Returns 1 upon success;             |
+|                   |                                     |                                         |  0 upon failure.                     |    
+|                   |                                     |                                         | -You should use a unique field.      |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+|    usercheck();   | Allows/Denies Users.                | $table $user $password                  | - Table must include:                | 
+|                   |                                     |                                         |   id(INT), user(TEXT), codex(TEXT).  |    
+|                   |                                     |                                         | - Returns "6r4n73d" when true        |    
+|                   |                                     |                                         |   or "0" when false.                 |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+|   encodepass();   | Encrypts password.                  | $password                               | - Returns encrypted string,          |
+|                   |                                     |                                         |   ready for saving to database.      |    
+-------------------------------------------------------------------------------------------------------------------------------------------
+   Cheatnotes: 
+		$dbhost    ->   Your DB's host address.
+		$dbuser    ->   Your DB's username.
+		$dbpswd    ->   Your DB's username's password.
+		$dbname    ->   Your DB's name.
+		$master    ->   Master password that will be used for encryption/decryption. 
+		$field     ->   The name of the field you are pointing to in the DB.
+		$fields[]  ->   Must be an Array; The name of the fields you are pointing to in the DB.
+		$data      ->   The string of information for/of the designated field.
+		$data[]    ->   Must be an Array; The strings of information for/of the designated fields.
+		$table     ->   The name of the table you want to work with.
+		$select    ->   A string of data that fits the SELECT method on mysql Ex.- *
+		$where     ->   A string of data that fits the WHERE method on mysql Ex.- field='data' AND field2='data2'
+		$orderby   ->   A string of data that fits the ORDERBY method on mysql Ex.- field ASC
+		$groupby   ->   A string of data that fits the GROUPBY method on mysql Ex.- field
+		$limit     ->   A string of data that fits the LIMIT method on mysql Ex.- 1,30
+		$user      ->   Username.
+		$password  ->   Unencrypted password.
+	
+	
+    ****************************************************************************************************
+    *			----- \    /     /\      |\    /|  -----|  |       -----		       *
+    *   		|      \ /      /  \     | \  / |  |	|  |       |		               *
+    *			|----   X      /____\    |  \/  |  |____|  |       |____		       *
+    *			|      / \    /      \   |      |  |       |       |		               *
+    *			|____ /   \  /        \  |      |  |       |_____  |____		       *
+    ****************************************************************************************************
+    ****************************************************************************************************
+    **** EXAMPLE of calling CLASS and METHOD readdatabase(); And printing contents of the response. ****
+    ****************************************************************************************************
+    ****************************************************************************************************
+    **** //We include the db class...						  		    ****
+    **** require "mydatabase_lib.class.php";							    ****
+    ****						  					    ****
+    **** //We set the DB connection information and master pawssword...				    ****
+    **** $dbhost = "yourhost or localhost";							    ****
+    **** $dbuser = "your DB user";								    ****
+    **** $dbpswd = "your DB password";								    ****
+    **** $dbname = "name of your DB";								    ****
+    **** $master = "a master password to encode";						    ****
+    ****											    ****
+    **** //We create our object, declare the class and set the information of our DB…		    ****
+    **** $myFooDB= new DBconnect();								    ****
+    **** $myFooDB->setinfo($dbhost,$dbuser,$dbpswd,$dbname,$master);				    ****
+    ****											    ****
+    **** //We declare the contents for our readdatabase query...				    ****
+    **** $select="*";										    ****
+    **** $fields[]="field 1";									    ****
+    **** $fields[]="field 2";									    ****
+    **** $data[]="data 1";									    ****
+    **** $data[]="data 2";									    ****
+    **** $table="name of my table";								    ****
+    **** $orderby="field 1 ASC";								    ****
+    **** $groupby="";										    ****
+    **** $limit="1,10";										    ****
+    ****											    ****
+    **** //We make the call to readdatabase method and print the results...			    ****
+    **** $result = $myFooDB->readdatabase($select,$fields,$data,$table,$orderby,$groupby,$limit);   ****
+    **** while($row = mysql_fetch_array($result))						    ****
+    **** {											    ****
+    **** $amount=count($row);									    ****
+    **** $amount=$amount-1;									    ****
+    **** for ($i=0;$i<=$amount;$i++){								    ****
+    **** echo $row[$i]."<br>";									    ****
+    **** } }											    ****
+    ****											    ****
+    ****************************************************************************************************
+    ****************************************************************************************************
+    				      ***-=w45p (0D35=-***
+
+
+	   ***********************INCLUDED CLASS FOR ENCRYPTION.*************************
+	// ****************************************************************************** \\
+	// A reversible password encryption routine by:					  \\
+	// Copyright 2003-2009 by A J Marston <http://www.tonymarston.net>		  \\
+	// Distributed under the GNU General Public Licence				  \\
+	// Modification: May 2007, M. Kolar <http://mkolar.org>:			  \\
+	// No need for repeating the first character of scramble strings at the end;      \\
+	// instead using the exact inverse function transforming $num2 to $num1.	  \\
+	// Modification: Jan 2009, A J Marston <http://www.tonymarston.net>:		  \\
+	// Use mb_substr() if it is available (for multibyte characters).   		  \\
+	// ****************************************************************************** \\
